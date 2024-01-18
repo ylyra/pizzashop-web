@@ -6,9 +6,9 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as DashboardImport } from './routes/_dashboard'
 import { Route as AuthImport } from './routes/_auth'
 import { Route as DashboardIndexImport } from './routes/_dashboard/index'
-import { Route as DashboardOrdersImport } from './routes/_dashboard/orders'
 import { Route as AuthSignUpImport } from './routes/_auth/sign-up'
 import { Route as AuthSignInImport } from './routes/_auth/sign-in'
+import { Route as DashboardOrdersIndexImport } from './routes/_dashboard/orders/index'
 
 // Create/Update Routes
 
@@ -27,11 +27,6 @@ const DashboardIndexRoute = DashboardIndexImport.update({
   getParentRoute: () => DashboardRoute,
 } as any)
 
-const DashboardOrdersRoute = DashboardOrdersImport.update({
-  path: '/orders',
-  getParentRoute: () => DashboardRoute,
-} as any)
-
 const AuthSignUpRoute = AuthSignUpImport.update({
   path: '/sign-up',
   getParentRoute: () => AuthRoute,
@@ -40,6 +35,11 @@ const AuthSignUpRoute = AuthSignUpImport.update({
 const AuthSignInRoute = AuthSignInImport.update({
   path: '/sign-in',
   getParentRoute: () => AuthRoute,
+} as any)
+
+const DashboardOrdersIndexRoute = DashboardOrdersIndexImport.update({
+  path: '/orders/',
+  getParentRoute: () => DashboardRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -62,12 +62,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignUpImport
       parentRoute: typeof AuthImport
     }
-    '/_dashboard/orders': {
-      preLoaderRoute: typeof DashboardOrdersImport
-      parentRoute: typeof DashboardImport
-    }
     '/_dashboard/': {
       preLoaderRoute: typeof DashboardIndexImport
+      parentRoute: typeof DashboardImport
+    }
+    '/_dashboard/orders/': {
+      preLoaderRoute: typeof DashboardOrdersIndexImport
       parentRoute: typeof DashboardImport
     }
   }
@@ -77,5 +77,5 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   AuthRoute.addChildren([AuthSignInRoute, AuthSignUpRoute]),
-  DashboardRoute.addChildren([DashboardOrdersRoute, DashboardIndexRoute]),
+  DashboardRoute.addChildren([DashboardIndexRoute, DashboardOrdersIndexRoute]),
 ])
