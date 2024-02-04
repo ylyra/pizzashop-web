@@ -2,11 +2,13 @@ import { RouterProvider } from '@tanstack/react-router'
 import ReactDOM from 'react-dom/client'
 import './global.css'
 
+import { QueryClientProvider } from '@tanstack/react-query'
 import { createRouter } from '@tanstack/react-router'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { NotFound } from './components/not-found'
 import { ThemeProvider } from './components/theme/provider'
 import { Toaster } from './components/ui/sonner'
+import { queryClient } from './lib/react-query'
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
 
@@ -36,7 +38,9 @@ if (!rootElement.innerHTML) {
 		<HelmetProvider>
 			<ThemeProvider defaultTheme="dark" storageKey="pizzashop.theme">
 				<Helmet titleTemplate="%s | pizza.shop" />
-				<RouterProvider router={router} globalNotFound={NotFound} />
+				<QueryClientProvider client={queryClient}>
+					<RouterProvider router={router} globalNotFound={NotFound} />
+				</QueryClientProvider>
 				<Toaster richColors />
 			</ThemeProvider>
 		</HelmetProvider>
