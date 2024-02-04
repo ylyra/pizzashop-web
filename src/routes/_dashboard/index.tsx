@@ -1,5 +1,5 @@
 import { FileRoute, redirect } from '@tanstack/react-router'
-import { Helmet } from 'react-helmet-async'
+import { Dashboard } from './-dashboard/dashboard'
 
 const isAuthenticated = () => {
 	return true
@@ -23,10 +23,5 @@ export const Route = new FileRoute('/_dashboard/').createRoute({
 })
 
 function Home() {
-	return (
-		<>
-			<Helmet title="Página Principal" />
-			<h3>Welcome to Home!</h3>
-		</>
-	)
+	return <Dashboard />
 }

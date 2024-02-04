@@ -15,7 +15,7 @@ export function AccountMenu() {
 			<DropdownMenuTrigger asChild>
 				<Button
 					variant="outline"
-					className="flex items-center gap-2 select-none"
+					className="flex items-center gap-2 select-none h-8 px-2"
 				>
 					Pizza Shop
 					<ChevronDown className="w-4 h-4" />

@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { valibotResolver } from '@hookform/resolvers/valibot'
-import { FileRoute, Link, useRouter } from '@tanstack/react-router'
+import { Link, createFileRoute, useRouter } from '@tanstack/react-router'
 import { Loader } from 'lucide-react'
 import { useCallback } from 'react'
 import { Helmet } from 'react-helmet-async'
@@ -17,7 +17,7 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { Output, email, minLength, object, string } from 'valibot'
 
-export const Route = new FileRoute('/_auth/sign-up').createRoute({
+export const Route = createFileRoute('/_auth/sign-up')({
 	component: Page
 })
 

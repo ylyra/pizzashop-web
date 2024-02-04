@@ -7,22 +7,14 @@ import {
 	SelectTrigger,
 	SelectValue
 } from '@/components/ui/select'
-import { useNavigate, useSearch } from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
 import { X } from 'lucide-react'
 import { OrderSearch } from './schema'
 
-export function OrderTableFilters() {
+type Props = OrderSearch
+
+export function OrderTableFilters({ name, order_id, status }: Props) {
 	const navigate = useNavigate()
-	const search = useSearch({
-		strict: false,
-		select(search: OrderSearch) {
-			return {
-				order_id: search.order_id,
-				name: search.name,
-				status: search.status
-			}
-		}
-	})
 
 	return (
 		<div className="flex items-center gap-2">
@@ -30,7 +22,7 @@ export function OrderTableFilters() {
 			<Input
 				placeholder="ID do pedido"
 				className="h-8 w-auto"
-				value={search.order_id}
+				value={order_id}
 				onChange={(e) => {
 					navigate({
 						search: (prev) => ({
@@ -43,7 +35,7 @@ export function OrderTableFilters() {
 			<Input
 				placeholder="Nome do cliente"
 				className="h-8 max-w-[320px] w-full"
-				value={search.name}
+				value={name}
 				onChange={(e) => {
 					navigate({
 						search: (prev) => ({
@@ -55,7 +47,7 @@ export function OrderTableFilters() {
 			/>
 
 			<Select
-				value={search.status}
+				value={status}
 				onValueChange={(value) => {
 					navigate({
 						search: (prev) => ({
@@ -79,20 +71,22 @@ export function OrderTableFilters() {
 				</SelectContent>
 			</Select>
 
-			<Button
-				variant="outline"
-				size="xs"
-				onClick={() => {
-					navigate({
-						to: '/orders',
-						// @ts-ignore
-						search: false
-					})
-				}}
-			>
-				<X className="mr-2 h-4 w-4" />
-				Remover filtros
-			</Button>
+			{(name !== '' || order_id !== '' || status !== 'all') && (
+				<Button
+					variant="outline"
+					size="xs"
+					onClick={() => {
+						navigate({
+							to: '/orders',
+							// @ts-ignore
+							search: false
+						})
+					}}
+				>
+					<X className="mr-2 h-4 w-4" />
+					Remover filtros
+				</Button>
+			)}
 		</div>
 	)
 }

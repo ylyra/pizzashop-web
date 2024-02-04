@@ -1,8 +1,10 @@
-import { FileRoute, Outlet } from '@tanstack/react-router'
+import { NotFound } from '@/components/not-found'
+import { Outlet, createFileRoute } from '@tanstack/react-router'
 import { Pizza } from 'lucide-react'
 
-export const Route = new FileRoute('/_auth').createRoute({
-	component: LayoutComponent
+export const Route = createFileRoute('/_auth')({
+	component: LayoutComponent,
+	notFoundComponent: NotFound
 })
 
 function LayoutComponent() {

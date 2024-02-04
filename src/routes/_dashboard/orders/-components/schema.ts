@@ -1,5 +1,4 @@
-
-import { Output, object, optional, picklist, string } from 'valibot'
+import { Output, number, object, optional, picklist, string } from 'valibot'
 
 export const ordersSearchSchema = object({
 	order_id: optional(string(), ''),
@@ -14,7 +13,8 @@ export const ordersSearchSchema = object({
 			'canceled'
 		]),
 		'all'
-	)
+	),
+	page: optional(number(), 1)
 })
 
 export type OrderSearch = Output<typeof ordersSearchSchema>

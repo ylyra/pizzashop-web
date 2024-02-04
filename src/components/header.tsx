@@ -12,12 +12,12 @@ export function Header() {
 				<Separator orientation="vertical" className="h-6" />
 
 				<nav className="flex items-center space-x-4 lg:space-x-6">
-					<NavLink to="/">
+					<NavLink to="/" search>
 						<Home className="h-4 w-4" />
 						Início
 					</NavLink>
 
-					<NavLink to="/orders">
+					<NavLink to="/orders" search>
 						<UtensilsCrossed className="h-4 w-4" />
 						Pedidos
 					</NavLink>

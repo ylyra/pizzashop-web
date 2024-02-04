@@ -1,8 +1,10 @@
 import { Header } from '@/components/header'
-import { FileRoute, Outlet } from '@tanstack/react-router'
+import { NotFound } from '@/components/not-found'
+import { Outlet, createFileRoute } from '@tanstack/react-router'
 
-export const Route = new FileRoute('/_dashboard').createRoute({
-	component: LayoutComponent
+export const Route = createFileRoute('/_dashboard')({
+	component: LayoutComponent,
+	notFoundComponent: NotFound
 })
 
 function LayoutComponent() {
