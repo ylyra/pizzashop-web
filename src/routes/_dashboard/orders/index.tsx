@@ -1,3 +1,4 @@
+import { getOrders } from '@/api/get-orders'
 import {
 	Pagination,
 	PaginationContent,
@@ -13,6 +14,7 @@ import {
 	TableHeader,
 	TableRow
 } from '@/components/ui/table'
+import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { ChevronsLeft, ChevronsRight } from 'lucide-react'
 import { Helmet } from 'react-helmet-async'
@@ -41,11 +43,18 @@ export const Route = createFileRoute('/_dashboard/orders/')({
 	},
 	component: Page,
 	validateSearch: (search: Record<string, unknown>) =>
-		parse(ordersSearchSchema, search)
+		parse(ordersSearchSchema, search),
+	loader: getOrders
 })
 
 function Page() {
 	const { name, order_id, page, status } = Route.useSearch()
+	const initialOrders = Route.useLoaderData()
+	const { data: result } = useQuery({
+		queryKey: ['orders'],
+		queryFn: getOrders,
+		initialData: initialOrders
+	})
 
 	return (
 		<>
@@ -77,8 +86,8 @@ function Page() {
 							</TableHeader>
 
 							<TableBody>
-								{Array.from({ length: 10 }).map((_, index) => (
-									<OrderTableRow key={`test-${index}`} />
+								{result.orders.map((order) => (
+									<OrderTableRow key={order.orderId} order={order} />
 								))}
 							</TableBody>
 						</Table>
@@ -86,7 +95,7 @@ function Page() {
 
 					<div className="flex items-center justify-between">
 						<span className="text-sm text-muted-foreground">
-							Total de 10 item(s)
+							Total de {result.meta.totalCount} item(s)
 						</span>
 
 						<Pagination className="w-auto mx-0">
@@ -100,6 +109,7 @@ function Page() {
 											order_id,
 											status
 										}}
+										disabled={page === 1}
 									>
 										<ChevronsLeft className="size-4" />
 									</PaginationLink>
@@ -109,11 +119,12 @@ function Page() {
 									<PaginationPrevious
 										to="/orders"
 										search={{
-											page: page - 1,
+											page: page > 1 ? page - 1 : page,
 											name,
 											order_id,
 											status
 										}}
+										disabled={page === 1}
 									/>
 								</PaginationItem>
 
@@ -121,11 +132,17 @@ function Page() {
 									<PaginationNext
 										to="/orders"
 										search={{
-											page: page + 1,
+											page:
+												page < result.meta.totalCount / result.meta.perPage
+													? page + 1
+													: page,
 											name,
 											order_id,
 											status
 										}}
+										disabled={
+											page === result.meta.totalCount / result.meta.perPage
+										}
 									/>
 								</PaginationItem>
 
@@ -138,6 +155,9 @@ function Page() {
 											order_id,
 											status
 										}}
+										disabled={
+											page === result.meta.totalCount / result.meta.perPage
+										}
 									>
 										<ChevronsRight className="size-4" />
 									</PaginationLink>
