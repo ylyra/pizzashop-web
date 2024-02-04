@@ -1,3 +1,4 @@
+import { signIn } from '@/api/sign-in'
 import { Button } from '@/components/ui/button'
 import {
 	Form,
@@ -9,6 +10,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { valibotResolver } from '@hookform/resolvers/valibot'
+import { useMutation } from '@tanstack/react-query'
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { Loader } from 'lucide-react'
 import { useCallback } from 'react'
@@ -30,14 +32,24 @@ type FormProps = Output<typeof schema>
 function SignIn() {
 	const form = useForm<FormProps>({
 		resolver: valibotResolver(schema),
-		defaultValues: {
-			email: ''
+		defaultValues: async () => {
+			const search = new URLSearchParams(window.location.search)
+			const email = search.get('email')
+
+			return {
+				email: email ?? ''
+			}
 		}
+	})
+	const { mutateAsync: authenticate } = useMutation({
+		mutationFn: signIn
 	})
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	const onSubmit = useCallback<SubmitHandler<FormProps>>(async (values) => {
 		try {
+			await authenticate(values)
+
 			toast.success('Enviamos um link de acesso para seu e-mail', {
 				action: {
 					label: 'Reenviar',

@@ -1,3 +1,4 @@
+import { registerRestaurant } from '@/api/register-restaurant'
 import { Button } from '@/components/ui/button'
 import {
 	Form,
@@ -9,6 +10,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { valibotResolver } from '@hookform/resolvers/valibot'
+import { useMutation } from '@tanstack/react-query'
 import { Link, createFileRoute, useRouter } from '@tanstack/react-router'
 import { Loader } from 'lucide-react'
 import { useCallback } from 'react'
@@ -41,14 +43,19 @@ function Page() {
 			restaurant_name: ''
 		}
 	})
+	const { mutateAsync: register } = useMutation({
+		mutationFn: registerRestaurant
+	})
 
 	const onSubmit = useCallback<SubmitHandler<FormProps>>(
 		async (values) => {
 			try {
+				await register(values)
+
 				toast.success('Restaurante cadastrado com sucesso!', {
 					action: {
 						label: 'Login',
-						onClick: () => router.history.push('/sign-in')
+						onClick: () => router.history.push(`/sign-in?email=${values.email}`)
 					}
 				})
 				console.log(values)
@@ -56,7 +63,7 @@ function Page() {
 				toast.error('Erro ao cadastrar restaurante')
 			}
 		},
-		[router]
+		[router, register]
 	)
 
 	return (
