@@ -10,6 +10,7 @@ import { DateRangePicker } from '@/components/ui/date-range-picker'
 import { Label } from '@/components/ui/label'
 import { useQuery } from '@tanstack/react-query'
 import { subDays } from 'date-fns'
+import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
 import { DateRange } from 'react-day-picker'
 import {
@@ -27,7 +28,7 @@ export function RevenueChart() {
 		from: subDays(new Date(), 7),
 		to: new Date()
 	})
-	const { data: dailyRevenueInPeriod } = useQuery({
+	const { data: dailyRevenueInPeriod, isLoading } = useQuery({
 		queryKey: ['metrics', 'daily-revenue-in-period', dateRange],
 		queryFn: () =>
 			getDailyRevenueInPeriod({
@@ -51,6 +52,12 @@ export function RevenueChart() {
 				</div>
 			</CardHeader>
 			<CardContent>
+				{isLoading && (
+					<div className="flex items-center justify-center h-[240px] w-full">
+						<Loader2 className="size-8 text-muted-foreground animate-spin" />
+					</div>
+				)}
+
 				{dailyRevenueInPeriod && (
 					<ResponsiveContainer width="100%" height={240}>
 						<LineChart style={{ fontSize: 12 }} data={dailyRevenueInPeriod}>
