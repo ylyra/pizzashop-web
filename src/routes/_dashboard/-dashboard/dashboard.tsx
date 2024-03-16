@@ -4,7 +4,7 @@ import { MonthlyCanceledOrdersCard } from './monthly-canceled-orders-card'
 import { MonthlyOrdersAmountCard } from './monthly-orders-amount-card'
 import { MonthlyRevenueCard } from './monthly-revenue-card'
 import { PopularProductsChart } from './popular-products-chart'
-import { RevenueChart } from './revenue-chat'
+import { RevenueChart } from './revenue-chart'
 
 export function Dashboard() {
 	return (
