@@ -3,9 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { formatNumberToCurrency } from '@/utils/formatNumberToCurrency'
 import { useQuery } from '@tanstack/react-query'
 import { DollarSign } from 'lucide-react'
+import { MetricCardSkeleton } from './metric-card-skeleton'
 
 export function MonthlyRevenueCard() {
-	const { data: monthRevenue } = useQuery({
+	const { data: monthRevenue, isLoading } = useQuery({
 		queryKey: ['metrics', 'month-revenue'],
 		queryFn: getMonthRevenue
 	})
@@ -20,6 +21,8 @@ export function MonthlyRevenueCard() {
 			</CardHeader>
 
 			<CardContent className="space-y-1">
+				{isLoading && <MetricCardSkeleton />}
+
 				{monthRevenue && (
 					<>
 						<span className="text-2xl font-bold tracking-tight">
