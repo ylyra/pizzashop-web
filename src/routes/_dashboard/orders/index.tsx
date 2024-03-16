@@ -21,6 +21,7 @@ import { Helmet } from 'react-helmet-async'
 import { parse } from 'valibot'
 import { OrderTableFilters } from './-components/order-table-filters'
 import { OrderTableRow } from './-components/order-table-row'
+import { OrderTableSkeleton } from './-components/order-table-skeleton'
 import { ordersSearchSchema } from './-components/schema'
 
 const isAuthenticated = () => {
@@ -49,7 +50,7 @@ export const Route = createFileRoute('/_dashboard/orders/')({
 function Page() {
 	const { name, order_id, page, status } = Route.useSearch()
 	const router = useRouter()
-	const { data: result } = useQuery({
+	const { data: result, isLoading } = useQuery({
 		queryKey: ['orders', page, name, order_id, status],
 		queryFn: () =>
 			getOrders({
@@ -90,6 +91,8 @@ function Page() {
 							</TableHeader>
 
 							<TableBody>
+								{isLoading && <OrderTableSkeleton />}
+
 								{result?.orders.map((order) => (
 									<OrderTableRow key={order.orderId} order={order} />
 								))}
