@@ -24,6 +24,7 @@ import { formatDistanceToNow } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { Search } from 'lucide-react'
 import { useState } from 'react'
+import { OrderDetailsSkeleton } from './order-details-skeleton'
 
 type Props = {
 	orderId: string
@@ -31,7 +32,7 @@ type Props = {
 
 export function OrderDetails({ orderId }: Props) {
 	const [isDetailsOpen, setIsDetailsOpen] = useState(false)
-	const { data: order } = useQuery({
+	const { data: order, isLoading } = useQuery({
 		queryKey: ['order-details', orderId],
 		queryFn: async () => getOrderDetails({ orderId }),
 		enabled: isDetailsOpen
@@ -51,6 +52,8 @@ export function OrderDetails({ orderId }: Props) {
 					<DialogTitle>Pedido: #{orderId}</DialogTitle>
 					<DialogDescription>Detalhes do pedido</DialogDescription>
 				</DialogHeader>
+
+				{isLoading && <OrderDetailsSkeleton />}
 
 				{order && (
 					<div className="space-y-6">
