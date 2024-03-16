@@ -15,7 +15,7 @@ import {
 	TableRow
 } from '@/components/ui/table'
 import { useQuery } from '@tanstack/react-query'
-import { createFileRoute, redirect } from '@tanstack/react-router'
+import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
 import { ChevronsLeft, ChevronsRight } from 'lucide-react'
 import { Helmet } from 'react-helmet-async'
 import { parse } from 'valibot'
@@ -43,17 +43,21 @@ export const Route = createFileRoute('/_dashboard/orders/')({
 	},
 	component: Page,
 	validateSearch: (search: Record<string, unknown>) =>
-		parse(ordersSearchSchema, search),
-	loader: getOrders
+		parse(ordersSearchSchema, search)
 })
 
 function Page() {
 	const { name, order_id, page, status } = Route.useSearch()
-	const initialOrders = Route.useLoaderData()
+	const router = useRouter()
 	const { data: result } = useQuery({
-		queryKey: ['orders'],
-		queryFn: getOrders,
-		initialData: initialOrders
+		queryKey: ['orders', page, name, order_id, status],
+		queryFn: () =>
+			getOrders({
+				pageIndex: page - 1,
+				name,
+				order_id,
+				status
+			})
 	})
 
 	return (
@@ -86,85 +90,89 @@ function Page() {
 							</TableHeader>
 
 							<TableBody>
-								{result.orders.map((order) => (
+								{result?.orders.map((order) => (
 									<OrderTableRow key={order.orderId} order={order} />
 								))}
 							</TableBody>
 						</Table>
 					</div>
 
-					<div className="flex items-center justify-between">
-						<span className="text-sm text-muted-foreground">
-							Total de {result.meta.totalCount} item(s)
-						</span>
+					{result && (
+						<div className="flex items-center justify-between">
+							<span className="text-sm text-muted-foreground">
+								Total de {result.meta.totalCount} item(s)
+							</span>
 
-						<Pagination className="w-auto mx-0">
-							<PaginationContent>
-								<PaginationItem>
-									<PaginationLink
-										to="/orders"
-										search={{
-											page: 1,
-											name,
-											order_id,
-											status
-										}}
-										disabled={page === 1}
-									>
-										<ChevronsLeft className="size-4" />
-									</PaginationLink>
-								</PaginationItem>
+							<Pagination className="w-auto mx-0">
+								<PaginationContent>
+									<PaginationItem>
+										<PaginationLink
+											onClick={() => {
+												router.history.push(
+													`/orders?page=1&name=${name}&order_id=${order_id}&status=${status}`
+												)
+											}}
+											disabled={page === 1}
+										>
+											<ChevronsLeft className="size-4" />
+										</PaginationLink>
+									</PaginationItem>
 
-								<PaginationItem>
-									<PaginationPrevious
-										to="/orders"
-										search={{
-											page: page > 1 ? page - 1 : page,
-											name,
-											order_id,
-											status
-										}}
-										disabled={page === 1}
-									/>
-								</PaginationItem>
+									<PaginationItem>
+										<PaginationPrevious
+											onClick={() => {
+												router.history.push(
+													`/orders?page=${
+														page > 1 ? page - 1 : page
+													}&name=${name}&order_id=${order_id}&status=${status}`
+												)
+											}}
+											disabled={page === 1}
+										/>
+									</PaginationItem>
 
-								<PaginationItem>
-									<PaginationNext
-										to="/orders"
-										search={{
-											page:
-												page < result.meta.totalCount / result.meta.perPage
-													? page + 1
-													: page,
-											name,
-											order_id,
-											status
-										}}
-										disabled={
-											page === result.meta.totalCount / result.meta.perPage
-										}
-									/>
-								</PaginationItem>
+									<PaginationItem>
+										<PaginationNext
+											onClick={() => {
+												router.history.push(
+													`/orders?page=${
+														page <
+														Math.ceil(
+															result.meta.totalCount / result.meta.perPage
+														)
+															? page + 1
+															: page
+													}&name=${name}&order_id=${order_id}&status=${status}`
+												)
+											}}
+											disabled={
+												page ===
+												Math.ceil(result.meta.totalCount / result.meta.perPage)
+											}
+										/>
+									</PaginationItem>
 
-								<PaginationItem>
-									<PaginationLink
-										to="/orders"
-										search={{
-											page: 1,
-											name,
-											order_id,
-											status
-										}}
-										disabled={
-											page === result.meta.totalCount / result.meta.perPage
-										}
-									>
-										<ChevronsRight className="size-4" />
-									</PaginationLink>
-								</PaginationItem>
-							</PaginationContent>
-						</Pagination>
-					</div>
+									<PaginationItem>
+										<PaginationLink
+											onClick={() => {
+												router.history.push(
+													`/orders?page=${Math.ceil(
+														result.meta.totalCount / result.meta.perPage
+													)}&name=${name}&order_id=${order_id}&status=${status}`
+												)
+											}}
+											disabled={
+												page ===
+												Math.ceil(result.meta.totalCount / result.meta.perPage)
+											}
+										>
+											<ChevronsRight className="size-4" />
+										</PaginationLink>
+									</PaginationItem>
+								</PaginationContent>
+							</Pagination>
+						</div>
+					)}
 				</div>
 			</div>
 		</>

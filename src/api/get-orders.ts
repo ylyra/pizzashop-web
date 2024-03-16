@@ -15,10 +15,32 @@ export type GetOrdersResponse = {
 	}
 }
 
-export async function getOrders() {
+export interface GetOrdersQuery {
+	pageIndex?: number | null
+	order_id: string
+	name: string
+	status:
+		| 'all'
+		| 'pending'
+		| 'processing'
+		| 'delivering'
+		| 'delivered'
+		| 'canceled'
+}
+
+export async function getOrders({
+	pageIndex,
+	name,
+	order_id,
+	status
+}: GetOrdersQuery) {
 	const response = await api.get<GetOrdersResponse>('/orders', {
 		params: {
-			pageIndex: 0
+			pageIndex: pageIndex,
+
+			...(name.length > 0 && { customerName: name }),
+			...(order_id.length > 0 && { orderId: order_id }),
+			...(status !== 'all' && { status })
 		}
 	})
 

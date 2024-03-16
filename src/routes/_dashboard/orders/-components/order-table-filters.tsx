@@ -27,6 +27,7 @@ export function OrderTableFilters({ name, order_id, status }: Props) {
 					navigate({
 						search: (prev) => ({
 							...prev,
+							page: 1,
 							order_id: e.target.value
 						})
 					})
@@ -40,6 +41,7 @@ export function OrderTableFilters({ name, order_id, status }: Props) {
 					navigate({
 						search: (prev) => ({
 							...prev,
+							page: 1,
 							name: e.target.value
 						})
 					})
@@ -52,6 +54,7 @@ export function OrderTableFilters({ name, order_id, status }: Props) {
 					navigate({
 						search: (prev) => ({
 							...prev,
+							page: 1,
 							status: value
 						})
 					})
